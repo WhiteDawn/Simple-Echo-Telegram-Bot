@@ -2,6 +2,7 @@
 
 import telegram
 from flask import Flask, request
+from functions import Response
 
 app = Flask(__name__)
 
@@ -12,6 +13,9 @@ with open ('apikey.txt', 'r') as apiKeyFile:
 
 bot = telegram.Bot(token=apiKey)
 
+responseGenerator = Response.ResponseGenerator()
+
+
 @app.route('/' + apiKey.split(':')[1] + '/hook', methods=['POST'])
 def webhook_handler():
     if request.method == "POST":
@@ -20,12 +24,17 @@ def webhook_handler():
         chat_id = update.message.chat.id
 
         # Telegram understands UTF-8, so encode text for unicode compatibility
-        text = update.message.text.encode('utf-8')
+        text = update.message.text
+
+        response = responseGenerator.generate_response(text)
+
+        response = response.encode('utf-8')
 
         # repeat the same message back (echo)
-        bot.sendMessage(chat_id=chat_id, text=text)
+        bot.sendMessage(chat_id=chat_id, text=response)
 
     return 'ok'
+
 
 @app.route('/')
 def index():
