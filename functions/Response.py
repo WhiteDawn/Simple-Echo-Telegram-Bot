@@ -17,8 +17,7 @@ def _one_dict():
 
 class ResponseGenerator:
 
-    def __init__(self, bus):
-        self.bus = bus
+    def __init__(self):
         self.eightball = EightBall()
         self.excuses = Excuses()
         self.commands = Commands()
