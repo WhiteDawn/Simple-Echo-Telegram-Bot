@@ -5,16 +5,18 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-global bot
-bot = telegram.Bot(token='TOKEN')
+apiKey = ''
 
+with open ('apikey.txt', 'r') as apiKeyFile:
+    apiKey = apiKeyFile.read().replace('\n', '')
 
-@app.route('/HOOK', methods=['POST'])
+bot = telegram.Bot(token=apiKey)
+
+@app.route('/' + apiKey.split(':')[1] + '/hook', methods=['POST'])
 def webhook_handler():
     if request.method == "POST":
         # retrieve the message in JSON and then transform it to Telegram object
         update = telegram.Update.de_json(request.get_json(force=True))
-
         chat_id = update.message.chat.id
 
         # Telegram understands UTF-8, so encode text for unicode compatibility
@@ -25,16 +27,9 @@ def webhook_handler():
 
     return 'ok'
 
-
-@app.route('/set_webhook', methods=['GET', 'POST'])
-def set_webhook():
-    s = bot.setWebhook('https://URL/HOOK')
-    if s:
-        return "webhook setup ok"
-    else:
-        return "webhook setup failed"
-
-
 @app.route('/')
 def index():
     return '.'
+
+if __name__ == '__main__':
+    app.run(debug=True, host="0.0.0.0", port=8443)
