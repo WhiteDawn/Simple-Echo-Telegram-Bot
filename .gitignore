@@ -1,2 +1,8 @@
 *.pyc
 apikey.txt
+*.py~
+*.gitignore~
+commands~
+excuses~
+markovdb~
+.idea/
