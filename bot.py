@@ -28,10 +28,9 @@ def webhook_handler():
 
         response = responseGenerator.generate_response(text)
 
-        response = response.encode('utf-8')
-
-        # repeat the same message back (echo)
-        bot.sendMessage(chat_id=chat_id, text=response)
+	if response is not None:
+        	response = response.encode('utf-8')
+        	bot.sendMessage(chat_id=chat_id, text=response)
 
     return 'ok'
 
@@ -41,4 +40,4 @@ def index():
     return '.'
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=8443)
+    app.run(debug=True, host="0.0.0.0", port=8888)

@@ -71,6 +71,6 @@ class ResponseGenerator:
                 elif token == "tase":
                     return self.chain.generateString()
 
-                elif token[0] == "!":
+                elif len(token) > 0 and token[0] == "!":
                     return self.commands.get(token[1:])
 
