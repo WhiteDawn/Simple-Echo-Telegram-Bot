@@ -43,7 +43,7 @@ class ResponseGenerator:
             return "Command !{0} created.".format(new_command)
 
         elif command == "!list":
-            string = ""
+            string = "!create !delete !reload !excuse !8ball !straws !image "
             for command_ in self.commands.list():
                 string += "!{0} ".format(command_)
 
@@ -78,6 +78,9 @@ class ResponseGenerator:
 
                 elif token == "!straws":
                     return self.straws.get()
+
+                elif token == "!image":
+                    return "/get " + self.chain.generateString()
 
                 elif token == "tase":
                     return self.chain.generateString()
