@@ -1,4 +1,5 @@
 from PhraseDatabases import EightBall, Excuses, Commands
+from RandomFun import Straws
 from collections import defaultdict
 from pymarkovchain import MarkovChain
 
@@ -21,6 +22,7 @@ class ResponseGenerator:
         self.eightball = EightBall()
         self.excuses = Excuses()
         self.commands = Commands()
+        self.straws = Straws("/", "=", "/")
         self.chain = MarkovChain("./markovdb")
         self.chain.db = _db_factory()
         with open("markovsource", "r") as markov_file:
@@ -56,6 +58,12 @@ class ResponseGenerator:
             else:
                 return "Command !{0} does not exist.".format(cleaned_command)
 
+        elif command == "!reload":
+            with open("markovsource", "r") as markov_file:
+                self.chain.generateDatabase(markov_file.readline())
+
+            return "Successfully reloaded my word database"
+
         # Not a system command, continue attempting to parse
         else:
             for token in body_tokens:
@@ -68,9 +76,20 @@ class ResponseGenerator:
                 elif token == "!8ball":
                     return self.eightball.get()
 
+                elif token == "!straws":
+                    return self.straws.get()
+
                 elif token == "tase":
                     return self.chain.generateString()
 
                 elif len(token) > 0 and token[0] == "!":
                     return self.commands.get(token[1:])
 
+                # we have a sentence to listen to, arbitrary length requirement
+                elif len(body) > 10:
+                    string_to_write = body + "."
+                    if body[len(body) - 1] == ".":
+                        string_to_write = body
+
+                    with open("markovsource", "a") as markov_file:
+                        markov_file.write(string_to_write)
